@@ -20,8 +20,11 @@ import com.github.acnaweb.study_api.model.Pessoa;
 import com.github.acnaweb.study_api.repository.PessoaRepository;
 import com.github.acnaweb.study_api.service.PessoaService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/pessoas")
+@Tag(name = "Pessoas", description = "Manutenção de informações sobre pessoas")
 public class PessoaController {
 
 	@Autowired
