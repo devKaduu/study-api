@@ -17,7 +17,6 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("Implementando run");
-		LOG.info("Estou testando o log");
+		LOG.info("teste de execução de instruções durante a inicialização");
 	}	
 }
