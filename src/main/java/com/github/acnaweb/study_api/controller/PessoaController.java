@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,40 +33,49 @@ public class PessoaController {
 	private PessoaRepository pessoaRepository;
 
 	@GetMapping
-	public List<SearchedPessoa> listAll() {
+	public ResponseEntity<List<SearchedPessoa>> listAll() {
 		List<SearchedPessoa> result = 
 				pessoaService.list()
 				.stream()
 				.map(SearchedPessoa::toDto)
 				.collect(Collectors.toList());
-		return result;
+		
+		return ResponseEntity.ok(result);
 	}
 
 	@PostMapping	
-	public Pessoa create(@RequestBody PessoaRequestCreate dto) {
-		// DE PARAmapeamento entre dto e o model
-		// DEPARA mapeamento entre PessoaCreated e Pessoa
-		
+	public ResponseEntity<Pessoa> create(@RequestBody PessoaRequestCreate dto) {
 		Pessoa pessoa = new Pessoa();
 		
-		// mapeamento
 		pessoa.setIdade(dto.getIdade());
 		pessoa.setNome(dto.getNome());		
 		
 		Pessoa result = pessoaService.save(pessoa);
-		return result;
+		
+		// return new ResponseEntity<>(result, HttpStatus.CREATED);
+		
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+		        .body(result);
+		
 	}
 
 	@PutMapping
-	public Pessoa update(@RequestBody PessoaRequestUpdate dto) {
+	public ResponseEntity<Pessoa> update(@RequestBody PessoaRequestUpdate dto) {
 		// verificar se o id informado já existe
 		
 		boolean exists =
 				pessoaRepository.existsById(dto.getId());
 		
 		if (!exists) {
-			throw new RuntimeException("Id não encontrado " 
-							+ dto.getId());			
+			return ResponseEntity.notFound().build();
+			/*
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.build();					
+			*/			
 		}
 		Pessoa pessoa = new Pessoa();
 		// mapeamento
@@ -73,12 +84,25 @@ public class PessoaController {
 		pessoa.setNome(dto.getNome());		
 
 		Pessoa result = pessoaService.save(pessoa);
-		return result;
+		return ResponseEntity
+				.status(HttpStatus.ACCEPTED)
+		        .body(result);
 	}
 
 	@DeleteMapping(value = "{id}")
-	public void delete(@PathVariable Long id) {
-		pessoaRepository.deleteById(id);		
+	public ResponseEntity<String> delete(@PathVariable Long id) {
+		boolean exists =
+				pessoaRepository.existsById(id);
+		
+		if (!exists) {
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body("id não encontrado " + id);
+						
+		}		
+		pessoaRepository.deleteById(id);
+		
+		return ResponseEntity.accepted().build();
 	}
 
 }
