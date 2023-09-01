@@ -15,6 +15,7 @@
 	<description>Aplicação de estudo de API com Spring</description>
 	<properties>
 		<java.version>8</java.version>
+		<springdoc-openapi-ui.version>1.6.14</springdoc-openapi-ui.version>
 		<ojdbc8.version>23.2.0.0</ojdbc8.version>
 	</properties>
 	<dependencies>
@@ -47,10 +48,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.6.14</version>
+			<version>${springdoc-openapi-ui.version}</version>
 		</dependency>
 
 		<dependency>
